@@ -1,5 +1,5 @@
 //
-//  LoginVC.swift
+//  CreateAccountVC.swift
 //  Smack
 //
 //  Created by junwoo on 2017. 10. 10..
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LoginVC: UIViewController {
+class CreateAccountVC: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -17,10 +17,9 @@ class LoginVC: UIViewController {
   }
   
   @IBAction func closeBtnPressed(_ sender: Any) {
-    dismiss(animated: true, completion: nil)
-  }
-  
-  @IBAction func createAccountBtnPressed(_ sender: Any) {
-    performSegue(withIdentifier: TO_CREATE_ACCOUNT, sender: nil)
+    //dismiss(animated: true, completion: nil)
+    
+    //close 버튼탭시 segue가 다 풀어지고 channelVC로 돌아간다
+    performSegue(withIdentifier: UNWIND, sender: nil)
   }
 }
