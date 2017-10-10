@@ -16,22 +16,11 @@ class ChatVC: UIViewController {
     super.viewDidLoad()
     
     menuBtn.addTarget(self.revealViewController(), action: #selector(SWRevealViewController.revealToggle(_:)), for: .touchUpInside)
+    
+    //드래그
+    self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+    //탭해서 닫기
+    self.view.addGestureRecognizer(self.revealViewController().tapGestureRecognizer())
   }
-  
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
-  }
-  
-  
-  /*
-   // MARK: - Navigation
-   
-   // In a storyboard-based application, you will often want to do a little preparation before navigation
-   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-   // Get the new view controller using segue.destinationViewController.
-   // Pass the selected object to the new view controller.
-   }
-   */
   
 }
