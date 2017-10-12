@@ -8,6 +8,11 @@
 
 import UIKit
 
+enum AvatarType {
+  case dark
+  case light
+}
+
 class AvatarCell: UICollectionViewCell {
 
   @IBOutlet weak var avatarImg: UIImageView!
@@ -23,5 +28,15 @@ class AvatarCell: UICollectionViewCell {
     
     //이미지가 셀 밖으로 안 삐져나가도록
     self.clipsToBounds = true
+  }
+  
+  func configureCell(index: Int, type: AvatarType) {
+    if type == AvatarType.dark {
+      avatarImg.image = UIImage(named: "dark\(index)")
+      self.layer.backgroundColor = UIColor.lightGray.cgColor
+    } else {
+      avatarImg.image = UIImage(named: "light\(index)")
+      self.layer.backgroundColor = UIColor.gray.cgColor
+    }
   }
 }
