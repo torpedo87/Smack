@@ -24,7 +24,18 @@ class ChannelVC: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(ChannelVC.userDataDidChange(_:)), name: NOTI_USER_DATA_DID_CHANGE, object: nil)
   }
   
+  //앱재실행시 로그인여부 확인
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    setUserInfo()
+    
+  }
+  
   @objc func userDataDidChange(_ noti: Notification) {
+    setUserInfo()
+  }
+  
+  func setUserInfo() {
     if AuthService.instance.isLoggedIn {
       loginBtn.setTitle(UserDataService.instance.name, for: .normal)
       userImg.image = UIImage(named: UserDataService.instance.avatarName)
