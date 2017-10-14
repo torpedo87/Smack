@@ -47,6 +47,7 @@ class AuthService {
     }
   }
   
+  //이메일, 비번으로 회원가입
   func registerUser(email: String, password: String, completion: @escaping CompletionHandler) {
     
     let lowerCaseEmail = email.lowercased()
@@ -68,6 +69,7 @@ class AuthService {
     
   }
   
+  //이메일, 비번으로 로그인
   func loginUser(email: String, password: String, completion: @escaping CompletionHandler) {
     let lowerCaseEmail = email.lowercased()
     
@@ -106,6 +108,7 @@ class AuthService {
     }
   }
   
+  //아바타 생성
   func createUser(name: String, email: String, avatarName: String, avatarColor: String, completion: @escaping CompletionHandler) {
     let lowerCaseEmail = email.lowercased()
     
