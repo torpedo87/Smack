@@ -25,6 +25,12 @@ class ChannelVC: UIViewController {
     
     //observer를 사용하여 noti 를 받기
     NotificationCenter.default.addObserver(self, selector: #selector(ChannelVC.userDataDidChange(_:)), name: NOTI_USER_DATA_DID_CHANGE, object: nil)
+    
+    SocketService.instance.getChannel { (success) in
+      if success {
+        self.tableView.reloadData()
+      }
+    }
   }
   
   //앱재실행시 로그인여부 확인
