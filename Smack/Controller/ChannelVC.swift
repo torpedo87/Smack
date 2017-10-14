@@ -25,6 +25,7 @@ class ChannelVC: UIViewController {
     
     //observer를 사용하여 noti 를 받기
     NotificationCenter.default.addObserver(self, selector: #selector(ChannelVC.userDataDidChange(_:)), name: NOTI_USER_DATA_DID_CHANGE, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(ChannelVC.channelsLoaded(_:)), name: NOTI_CHANNELS_LOADED, object: nil)
     
     SocketService.instance.getChannel { (success) in
       if success {
@@ -44,6 +45,10 @@ class ChannelVC: UIViewController {
     setUserInfo()
   }
   
+  @objc func channelsLoaded(_ noti: Notification) {
+    tableView.reloadData()
+  }
+  
   func setUserInfo() {
     if AuthService.instance.isLoggedIn {
       loginBtn.setTitle(UserDataService.instance.name, for: .normal)
@@ -53,6 +58,7 @@ class ChannelVC: UIViewController {
       loginBtn.setTitle("Login", for: .normal)
       userImg.image = UIImage(named: "menuProfileIcon")
       userImg.backgroundColor = UIColor.clear
+      tableView.reloadData()
     }
   }
   
@@ -70,15 +76,22 @@ class ChannelVC: UIViewController {
   }
   
   @IBAction func addChannelBtnPressed(_ sender: Any) {
-    let addChannelVC = AddChannelVC()
-    addChannelVC.modalPresentationStyle = .custom
-    present(addChannelVC, animated: true, completion: nil)
+    if AuthService.instance.isLoggedIn {
+      let addChannelVC = AddChannelVC()
+      addChannelVC.modalPresentationStyle = .custom
+      present(addChannelVC, animated: true, completion: nil)
+    }
+    
   }
 }
 
 extension ChannelVC: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let channel = MessageService.instance.channels[indexPath.row]
+    MessageService.instance.selectedChannel = channel
+    NotificationCenter.default.post(name: NOTI_CHANNEL_SELECTED, object: nil)
     
+    self.revealViewController().revealToggle(animated: true)
   }
 }
 

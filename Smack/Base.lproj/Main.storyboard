@@ -594,6 +594,7 @@
                         <viewLayoutGuide key="safeArea" id="GPH-rj-gv1"/>
                     </view>
                     <connections>
+                        <outlet property="channelNameLabel" destination="CrB-xU-0GM" id="4J3-ms-IQn"/>
                         <outlet property="menuBtn" destination="MR0-wy-2hf" id="zo0-VW-Wet"/>
                     </connections>
                 </viewController>

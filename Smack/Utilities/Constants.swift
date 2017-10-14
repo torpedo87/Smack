@@ -43,3 +43,5 @@ let SmackPurplePlaceholer = #colorLiteral(red: 0.3254901961, green: 0.4215201139
 
 //notification
 let NOTI_USER_DATA_DID_CHANGE = Notification.Name("notiUserDataChanged")
+let NOTI_CHANNELS_LOADED = Notification.Name("notiChannelsLoaded")
+let NOTI_CHANNEL_SELECTED = Notification.Name("notiChannelSelected")
