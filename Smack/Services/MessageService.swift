@@ -22,23 +22,23 @@ class MessageService {
         guard let data = response.data else { return }
         
         //struct channel 이 decodable 이 아닌 경우
-//        if let json = JSON(data: data).array {
-//          for channelItem in json {
-//            let channelName = channelItem["name"].stringValue
-//            let channelDescription = channelItem["description"].stringValue
-//            let channelId = channelItem["_id"].stringValue
-//
-//            let channel = Channel(channelTitle: channelName, channelDescription: channelDescription, id: channelId)
-//            self.channels.append(channel)
-//          }
-//        }
+        if let json = JSON(data: data).array {
+          for channelItem in json {
+            let channelName = channelItem["name"].stringValue
+            let channelDescription = channelItem["description"].stringValue
+            let channelId = channelItem["_id"].stringValue
+
+            let channel = Channel(channelTitle: channelName, channelDescription: channelDescription, id: channelId)
+            self.channels.append(channel)
+          }
+        }
         
         //struct channel 이 decodable 인 경우
-        do {
-          self.channels = try JSONDecoder().decode([Channel].self, from: data)
-        } catch let error {
-          debugPrint(error as Any)
-        }
+//        do {
+//          self.channels = try JSONDecoder().decode([Channel].self, from: data)
+//        } catch let error {
+//          debugPrint(error as Any)
+//        }
         
         print("channels: ", self.channels)
         completion(true)
