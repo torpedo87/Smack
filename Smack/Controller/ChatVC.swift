@@ -10,11 +10,17 @@ import UIKit
 
 class ChatVC: UIViewController {
   
+  @IBOutlet weak var mesageTxt: UITextField!
   @IBOutlet weak var menuBtn: UIButton!
   
   @IBOutlet weak var channelNameLabel: UILabel!
   override func viewDidLoad() {
     super.viewDidLoad()
+    //키보드 사용시 뷰도 올라가기
+    view.bindToKeyboard()
+    //화면 탭해서 키보드 내리기
+    let tap = UITapGestureRecognizer(target: self, action: #selector(ChatVC.closeTap))
+    view.addGestureRecognizer(tap)
     
     menuBtn.addTarget(self.revealViewController(), action: #selector(SWRevealViewController.revealToggle(_:)), for: .touchUpInside)
     
@@ -34,6 +40,10 @@ class ChatVC: UIViewController {
       })
     }
     
+  }
+  
+  @objc func closeTap() {
+    view.endEditing(true)
   }
   
   @objc func userDataDidChange(_ noti: Notification) {
@@ -73,6 +83,20 @@ class ChatVC: UIViewController {
       if success {
         
       }
+    }
+  }
+  @IBAction func sendMessageBtnPressed(_ sender: Any) {
+    if AuthService.instance.isLoggedIn {
+      guard let channelId = MessageService.instance.selectedChannel?.id else { return }
+      guard let messageBody = mesageTxt.text else { return }
+      
+      SocketService.instance.addMessage(messageBody: messageBody, userId: UserDataService.instance.id, channelId: channelId, completion: { (success) in
+        if success {
+          self.mesageTxt.text = ""
+          //키보드 내리기
+          self.mesageTxt.resignFirstResponder()
+        }
+      })
     }
   }
   
