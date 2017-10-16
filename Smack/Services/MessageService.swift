@@ -15,6 +15,7 @@ class MessageService {
   
   var channels = [Channel]()
   var selectedChannel: Channel?
+  var messages = [Message]()
   
   func findAllChannels(completion: @escaping CompletionHandler) {
     Alamofire.request(URL_GET_CHANNELS, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: BEARER_HEADER).responseJSON { (response) in
@@ -32,6 +33,9 @@ class MessageService {
             let channel = Channel(channelTitle: channelName, channelDescription: channelDescription, id: channelId)
             self.channels.append(channel)
           }
+          
+          NotificationCenter.default.post(name: NOTI_CHANNELS_LOADED, object: nil)
+          completion(true)
         }
         
         //struct channel 이 decodable 인 경우
@@ -41,8 +45,6 @@ class MessageService {
 //          debugPrint(error as Any)
 //        }
         
-        NotificationCenter.default.post(name: NOTI_CHANNELS_LOADED, object: nil)
-        completion(true)
       } else {
         completion(false)
         debugPrint(response.result.error as Any)
@@ -52,5 +54,39 @@ class MessageService {
   
   func clearChannels() {
     channels.removeAll()
+  }
+  
+  func clearMessages() {
+    messages.removeAll()
+  }
+  
+  func findAllMessagesForChannel(channelId: String, completion: @escaping CompletionHandler) {
+    Alamofire.request("\(URL_GET_MESSAGES)\(channelId)", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: BEARER_HEADER).responseJSON { (response) in
+      if response.result.error == nil {
+        self.clearMessages()
+        guard let data = response.data else { return }
+        if let json = JSON(data: data).array {
+          for messageItem in json {
+            let mesasgeBody = messageItem["messageBody"].stringValue
+            let channelId = messageItem["channelId"].stringValue
+            let id = messageItem["_id"].stringValue
+            let userName = messageItem["userName"].stringValue
+            let userAvatar = messageItem["userAvatar"].stringValue
+            let userAvatarColor = messageItem["userAvatarColor"].stringValue
+            let timeStamp = messageItem["timeStamp"].stringValue
+            
+            let message = Message(message: mesasgeBody, userName: userName, channelId: channelId, userAvatar: userAvatar, userAvatarColor: userAvatarColor, id: id, timestamp: timeStamp)
+            self.messages.append(message)
+            
+          }
+          print("mesages: ",self.messages)
+          completion(true)
+        }
+      } else {
+        completion(false)
+        debugPrint(response.result.error as Any)
+      }
+      
+    }
   }
 }
