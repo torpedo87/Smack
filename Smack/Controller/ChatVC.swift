@@ -12,10 +12,19 @@ class ChatVC: UIViewController {
   
   @IBOutlet weak var mesageTxt: UITextField!
   @IBOutlet weak var menuBtn: UIButton!
-  
+  @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var channelNameLabel: UILabel!
+  
   override func viewDidLoad() {
     super.viewDidLoad()
+    tableView.dataSource = self
+    tableView.delegate = self
+    
+    //일반적인 tableviewcell의 높이
+    tableView.estimatedRowHeight = 80
+    //메시지가 여러줄일 경우 셀 크기 동적으로 조정됨
+    tableView.rowHeight = UITableViewAutomaticDimension
+    
     //키보드 사용시 뷰도 올라가기
     view.bindToKeyboard()
     //화면 탭해서 키보드 내리기
@@ -81,7 +90,7 @@ class ChatVC: UIViewController {
     guard let channelId = MessageService.instance.selectedChannel?.id else { return }
     MessageService.instance.findAllMessagesForChannel(channelId: channelId) { (success) in
       if success {
-        
+        self.tableView.reloadData()
       }
     }
   }
@@ -100,4 +109,28 @@ class ChatVC: UIViewController {
     }
   }
   
+}
+
+extension ChatVC: UITableViewDelegate {
+  
+}
+
+extension ChatVC: UITableViewDataSource {
+  func numberOfSections(in tableView: UITableView) -> Int {
+    return 1
+  }
+  
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return MessageService.instance.messages.count
+  }
+  
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    if let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell", for: indexPath) as? MessageCell {
+      let message = MessageService.instance.messages[indexPath.row]
+      cell.configureCell(message: message)
+      return cell
+    } else {
+      return MessageCell()
+    }
+  }
 }
