@@ -14,11 +14,15 @@ class ChatVC: UIViewController {
   @IBOutlet weak var menuBtn: UIButton!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var channelNameLabel: UILabel!
+  @IBOutlet weak var sendBtn: UIButton!
+  
+  var isTyping = false
   
   override func viewDidLoad() {
     super.viewDidLoad()
     tableView.dataSource = self
     tableView.delegate = self
+    sendBtn.isHidden = true
     
     //일반적인 tableviewcell의 높이
     tableView.estimatedRowHeight = 80
@@ -41,6 +45,17 @@ class ChatVC: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(ChatVC.userDataDidChange(_:)), name: NOTI_USER_DATA_DID_CHANGE, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(ChatVC.channelSelected(_:)), name: NOTI_CHANNEL_SELECTED, object: nil)
     
+    SocketService.instance.getChatMessages { (success) in
+      if success {
+        self.tableView.reloadData()
+        if MessageService.instance.messages.count > 0 {
+          //문자 보내면 화면이 제일 아래로 스크롤되기
+          let lastIndex = IndexPath(row: MessageService.instance.messages.count - 1, section: 0)
+          self.tableView.scrollToRow(at: lastIndex, at: .bottom, animated: false)
+        }
+      }
+    }
+    
     if AuthService.instance.isLoggedIn {
       AuthService.instance.findUserByEmail(completion: { (success) in
         if success {
@@ -60,6 +75,7 @@ class ChatVC: UIViewController {
       onLoginGetMessages()
     } else {
       channelNameLabel.text = "Please login"
+      tableView.reloadData()
     }
   }
   
@@ -109,6 +125,18 @@ class ChatVC: UIViewController {
     }
   }
   
+  //텍스트가 있을 때에만 send 버튼 활성화
+  @IBAction func messageTxtEditing(_ sender: Any) {
+    if mesageTxt.text == "" {
+      isTyping = false
+      sendBtn.isHidden = true
+    } else {
+      if isTyping == false {
+        sendBtn.isHidden = false
+      }
+      isTyping = true
+    }
+  }
 }
 
 extension ChatVC: UITableViewDelegate {
