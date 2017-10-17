@@ -47,11 +47,11 @@ class ChatVC: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(ChatVC.channelSelected(_:)), name: NOTI_CHANNEL_SELECTED, object: nil)
     
     //실시간으로 메시지 받기
-    SocketService.instance.getChatMessages { (success) in
-      if success {
+    SocketService.instance.getChatMessages { (newMessage) in
+      if newMessage.channelId == MessageService.instance.selectedChannel?.id && AuthService.instance.isLoggedIn {
+        MessageService.instance.messages.append(newMessage)
         self.tableView.reloadData()
         if MessageService.instance.messages.count > 0 {
-          //문자 보내면 화면이 제일 아래로 스크롤되기
           let lastIndex = IndexPath(row: MessageService.instance.messages.count - 1, section: 0)
           self.tableView.scrollToRow(at: lastIndex, at: .bottom, animated: false)
         }

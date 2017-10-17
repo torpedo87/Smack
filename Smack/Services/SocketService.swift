@@ -54,7 +54,7 @@ class SocketService: NSObject {
     completion(true)
   }
   
-  func getChatMessages(completion: @escaping CompletionHandler) {
+  func getChatMessages(completion: @escaping (_ newMessage: Message) -> Void) {
     //api가 메시지를 만들었다고 관련 사용자들에게 알려줌
     socket.on("messageCreated") { (dataArray, ack) in
       guard let messageBody = dataArray[0] as? String else { return }
@@ -65,13 +65,9 @@ class SocketService: NSObject {
       guard let id = dataArray[6] as? String else { return }
       guard let timeStamp = dataArray[7] as? String else { return }
       
-      if AuthService.instance.isLoggedIn && MessageService.instance.selectedChannel?.id == channelId {
-        let newMessage = Message(message: messageBody, userName: userName, channelId: channelId, userAvatar: userAvatar, userAvatarColor: userAvatarColor, id: id, timestamp: timeStamp)
-        MessageService.instance.messages.append(newMessage)
-        completion(true)
-      } else {
-        completion(false)
-      }
+      let newMessage = Message(message: messageBody, userName: userName, channelId: channelId, userAvatar: userAvatar, userAvatarColor: userAvatarColor, id: id, timestamp: timeStamp)
+      
+      completion(newMessage)
       
     }
   }

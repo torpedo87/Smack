@@ -27,8 +27,17 @@ class ChannelVC: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(ChannelVC.userDataDidChange(_:)), name: NOTI_USER_DATA_DID_CHANGE, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(ChannelVC.channelsLoaded(_:)), name: NOTI_CHANNELS_LOADED, object: nil)
     
+    //api로부터 채널 생성됐다고 알림받기
     SocketService.instance.getChannel { (success) in
       if success {
+        self.tableView.reloadData()
+      }
+    }
+    
+    //다른 채널의 새 메시지 알림받기
+    SocketService.instance.getChatMessages { (newMessage) in
+      if MessageService.instance.selectedChannel?.id != newMessage.channelId && AuthService.instance.isLoggedIn {
+        MessageService.instance.unreadChannels.append(newMessage.channelId)
         self.tableView.reloadData()
       }
     }
@@ -92,6 +101,13 @@ extension ChannelVC: UITableViewDelegate {
     NotificationCenter.default.post(name: NOTI_CHANNEL_SELECTED, object: nil)
     
     self.revealViewController().revealToggle(animated: true)
+    
+    if MessageService.instance.unreadChannels.count > 0 {
+      MessageService.instance.unreadChannels = MessageService.instance.unreadChannels.filter{ $0 != channel.id }
+    }
+    let index = IndexPath(row: indexPath.row, section: 0)
+    tableView.reloadRows(at: [index], with: .none)
+    tableView.selectRow(at: index, animated: false, scrollPosition: .none)
   }
 }
 
