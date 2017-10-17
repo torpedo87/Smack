@@ -15,6 +15,7 @@ class ChatVC: UIViewController {
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var channelNameLabel: UILabel!
   @IBOutlet weak var sendBtn: UIButton!
+  @IBOutlet weak var typingUsersLabel: UILabel!
   
   var isTyping = false
   
@@ -45,6 +46,7 @@ class ChatVC: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(ChatVC.userDataDidChange(_:)), name: NOTI_USER_DATA_DID_CHANGE, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(ChatVC.channelSelected(_:)), name: NOTI_CHANNEL_SELECTED, object: nil)
     
+    //실시간으로 메시지 받기
     SocketService.instance.getChatMessages { (success) in
       if success {
         self.tableView.reloadData()
@@ -53,6 +55,35 @@ class ChatVC: UIViewController {
           let lastIndex = IndexPath(row: MessageService.instance.messages.count - 1, section: 0)
           self.tableView.scrollToRow(at: lastIndex, at: .bottom, animated: false)
         }
+      }
+    }
+    
+    //실시간으로 타이핑 유저 확인하기
+    SocketService.instance.getTypingUsers { (typingUsers) in
+      guard let channelId = MessageService.instance.selectedChannel?.id else { return }
+      
+      var names = ""
+      var numberOfTypers = 0
+      
+      for (userName, channelID) in typingUsers {
+        if userName != UserDataService.instance.name && channelId == channelID {
+          if names == "" {
+            names = userName
+          } else {
+            names = "\(names), \(userName)"
+          }
+          numberOfTypers += 1
+        }
+      }
+      
+      if numberOfTypers > 0 && AuthService.instance.isLoggedIn {
+        var verb = "is"
+        if numberOfTypers > 1 {
+          verb = "are"
+        }
+        self.typingUsersLabel.text = "\(names) \(verb) typing a message"
+      } else {
+        self.typingUsersLabel.text = ""
       }
     }
     
@@ -120,6 +151,7 @@ class ChatVC: UIViewController {
           self.mesageTxt.text = ""
           //키보드 내리기
           self.mesageTxt.resignFirstResponder()
+          SocketService.instance.socket.emit("stopType", UserDataService.instance.name)
         }
       })
     }
@@ -127,12 +159,17 @@ class ChatVC: UIViewController {
   
   //텍스트가 있을 때에만 send 버튼 활성화
   @IBAction func messageTxtEditing(_ sender: Any) {
+    guard let channelId = MessageService.instance.selectedChannel?.id else { return }
     if mesageTxt.text == "" {
       isTyping = false
       sendBtn.isHidden = true
+      
+      //api에게 타이핑 중 아니라고 알리기
+      SocketService.instance.socket.emit("stopType", UserDataService.instance.name)
     } else {
       if isTyping == false {
         sendBtn.isHidden = false
+        SocketService.instance.socket.emit("startType", UserDataService.instance.name, channelId)
       }
       isTyping = true
     }

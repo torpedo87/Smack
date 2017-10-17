@@ -662,15 +662,23 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UfD-bQ-c9K">
+                                <rect key="frame" x="8" y="621" width="0.0" height="0.0"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="SOz-oB-epe" firstAttribute="bottom" secondItem="GPH-rj-gv1" secondAttribute="bottom" id="2De-RS-6RR"/>
                             <constraint firstItem="SOz-oB-epe" firstAttribute="leading" secondItem="GPH-rj-gv1" secondAttribute="leading" id="5yM-Pe-4nD"/>
+                            <constraint firstItem="UfD-bQ-c9K" firstAttribute="leading" secondItem="GPH-rj-gv1" secondAttribute="leading" constant="8" id="7m0-Fb-ecr"/>
                             <constraint firstItem="GPH-rj-gv1" firstAttribute="trailing" secondItem="SOz-oB-epe" secondAttribute="trailing" id="80A-CB-Ba0"/>
                             <constraint firstItem="seB-kn-aKJ" firstAttribute="trailing" secondItem="GPH-rj-gv1" secondAttribute="trailing" id="B0j-uH-L5d"/>
                             <constraint firstItem="seB-kn-aKJ" firstAttribute="leading" secondItem="GPH-rj-gv1" secondAttribute="leading" id="GNg-Ph-P9U"/>
                             <constraint firstItem="GPH-rj-gv1" firstAttribute="trailing" secondItem="xxG-DD-gYz" secondAttribute="trailing" id="OHx-Kr-cvu"/>
+                            <constraint firstItem="SOz-oB-epe" firstAttribute="top" secondItem="UfD-bQ-c9K" secondAttribute="bottom" constant="6" id="Ubr-Qe-XD9"/>
                             <constraint firstItem="GPH-rj-gv1" firstAttribute="trailing" secondItem="05y-VD-uSb" secondAttribute="trailing" constant="8" id="UqB-VB-myF"/>
                             <constraint firstItem="05y-VD-uSb" firstAttribute="centerY" secondItem="SOz-oB-epe" secondAttribute="centerY" id="bfm-lM-I6e"/>
                             <constraint firstItem="SOz-oB-epe" firstAttribute="top" secondItem="xxG-DD-gYz" secondAttribute="bottom" constant="30" id="ce8-wp-TNX"/>
@@ -686,6 +694,7 @@
                         <outlet property="mesageTxt" destination="SOz-oB-epe" id="Soh-4X-AVf"/>
                         <outlet property="sendBtn" destination="05y-VD-uSb" id="CTi-jz-GLh"/>
                         <outlet property="tableView" destination="xxG-DD-gYz" id="8rc-En-UH1"/>
+                        <outlet property="typingUsersLabel" destination="UfD-bQ-c9K" id="UUZ-kc-7hg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IQQ-Mc-TMP" userLabel="First Responder" sceneMemberID="firstResponder"/>

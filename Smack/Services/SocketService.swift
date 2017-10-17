@@ -75,4 +75,13 @@ class SocketService: NSObject {
       
     }
   }
+  
+  //api로부터 타이핑중인 유저 정보 받기
+  func getTypingUsers(_ completion: @escaping (_ typingUsers:[String:String]) -> Void) {
+    
+    socket.on("userTypingUpdate") { (dataArray, ack) in
+      guard let typingUsers = dataArray[0] as? [String:String] else { return }
+      completion(typingUsers)
+    }
+  }
 }
