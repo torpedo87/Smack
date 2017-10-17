@@ -106,7 +106,11 @@ extension ChannelVC: UITableViewDelegate {
       MessageService.instance.unreadChannels = MessageService.instance.unreadChannels.filter{ $0 != channel.id }
     }
     let index = IndexPath(row: indexPath.row, section: 0)
+    
+    //키워진 폰트 다시 폰트 줄이기
     tableView.reloadRows(at: [index], with: .none)
+    
+    //채널 선택된 명암 주기
     tableView.selectRow(at: index, animated: false, scrollPosition: .none)
   }
 }
